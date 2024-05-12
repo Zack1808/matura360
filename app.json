@@ -18,10 +18,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.zack1808.matura360"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dd6fc8c7-e7d1-41d3-a06f-08cb10d76e0f"
+      }
+    },
+    "owner": "zack1808"
   }
 }
