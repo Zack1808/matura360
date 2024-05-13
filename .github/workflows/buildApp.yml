@@ -1,0 +1,35 @@
+# This pipeline can be used when once the .env file is uploaded to the repository and the repository has been made private
+# Also, in the repo secrets, the access token for accessing the expo account has to be defined
+name: EAS Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Check Manual Trigger
+        run: echo "Workflow was triggered manually"
+        if: github.event_name == 'workflow_dispatch'
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build with EAS
+        run: eas build -p android --profile preview --non-interactive
