@@ -6,8 +6,6 @@ on:
     types: [opened]
   issues:
     types: [opened]
-  push:
-    branches: [master]
 
 jobs:
   # Greeting the new contributer when they make a pull request or creat a issue
