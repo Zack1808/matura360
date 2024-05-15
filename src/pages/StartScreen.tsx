@@ -11,6 +11,7 @@ import {
 import React, { useState, useEffect } from "react";
 
 import Loader from "../components/Loader";
+import Button from "../components/Button";
 
 const StartScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,8 +44,24 @@ const StartScreen = () => {
         <View style={styles.welcomeContainer}>
           <Text style={styles.title}>Dobrodošli</Text>
           <Text style={styles.text}>
-            Provjeri svoje znanje uz{" "}
-            <Text style={{ color: "#EC622C" }}>Matura360</Text>
+            Provjeri svoje znanje uz
+            <Text style={{ color: "#EC622C" }}> Matura360</Text>
+          </Text>
+          <View style={styles.welcomeButtonContainer}>
+            <Button style={{ width: "100%" }} primary>
+              Prijavi se
+            </Button>
+            <Button style={{ width: "100%" }} secondary>
+              Registriraj se
+            </Button>
+          </View>
+        </View>
+        <View style={styles.bottomContainer}>
+          <Button style={{ width: "100%" }} secondary>
+            Nastavi kao gost
+          </Button>
+          <Text style={[styles.text, { fontSize: 16 }]}>
+            Kao gost nećeš moći pratiti napredak.
           </Text>
         </View>
       </ImageBackground>
@@ -80,18 +97,27 @@ const styles = StyleSheet.create({
     height: 100,
   },
   welcomeContainer: {
-    borderWidth: 1,
     width: "100%",
-    paddingTop: 50,
+    paddingTop: 70,
     gap: 30,
   },
   title: {
-    fontSize: 50,
+    fontSize: 45,
     fontFamily: "nohemiSemiBold",
   },
   text: {
     fontSize: 20,
-    fontFamily: "nohemiSemiBold",
+    fontFamily: "nohemiMedium",
+  },
+  welcomeButtonContainer: {
+    gap: 30,
+  },
+  bottomContainer: {
+    width: "100%",
+    marginTop: "auto",
+    paddingBottom: 70,
+    alignItems: "center",
+    gap: 20,
   },
 });
 
