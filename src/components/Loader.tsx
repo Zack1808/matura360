@@ -20,8 +20,12 @@ const Loader = () => {
   useEffect(() => {
     progress.value = withDelay(
       1000,
-      withRepeat(withTiming(1, { duration: 2000 }), -1, true)
+      withRepeat(withTiming(0, { duration: 2000 }), -1, true)
     );
+
+    return () => {
+      progress.value = 0;
+    };
   }, []);
 
   return (
