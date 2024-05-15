@@ -13,7 +13,7 @@ import React, { useState, useEffect } from "react";
 import Loader from "../components/Loader";
 import Button from "../components/Button";
 
-const StartScreen = () => {
+const StartScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

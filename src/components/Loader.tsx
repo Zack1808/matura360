@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const Loader = () => {
+const Loader: React.FC = () => {
   const progress = useSharedValue<number>(1);
 
   const animationStyle = useAnimatedStyle(() => {

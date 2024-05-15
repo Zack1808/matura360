@@ -15,14 +15,14 @@ interface ButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const Button = ({
+const Button: React.FC<ButtonProps> = ({
   children,
   onPress,
   primary,
   secondary,
   style,
   ...rest
-}: ButtonProps) => {
+}) => {
   const handlePress = () => {
     onPress && onPress();
   };
