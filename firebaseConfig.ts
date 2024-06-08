@@ -7,13 +7,12 @@ import { FIREBASE_API_KEY } from "@env";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: "matura360-7f90e.firebaseapp.com",
-  projectId: "matura360-7f90e",
-  storageBucket: "matura360-7f90e.appspot.com",
-  messagingSenderId: "756096172243",
-  appId: "1:756096172243:web:934b6bb8ad67e604491426",
-  measurementId: "G-JWD6W5N7KS",
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

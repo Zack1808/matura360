@@ -1,19 +1,7 @@
-import {
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 
-interface ButtonProps {
-  children?: string;
-  onPress?: () => void;
-  primary?: boolean;
-  secondary?: boolean;
-  style?: StyleProp<ViewStyle>;
-}
+import { ButtonProps } from "../interfaces/components";
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -38,6 +26,7 @@ const Button: React.FC<ButtonProps> = ({
           styles.buttonText,
           primary && styles.buttonTextPrimary,
           secondary && styles.buttonTextSecondary,
+          style,
         ]}
       >
         {children}
@@ -48,27 +37,30 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   primary: {
-    padding: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     alignItems: "center",
     borderRadius: 50,
     backgroundColor: "#EC622C",
   },
   secondary: {
-    padding: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     alignItems: "center",
     borderRadius: 50,
     borderWidth: 1,
     borderColor: "#EC622C",
   },
   buttonText: {
-    fontFamily: "nohemiSemiBold",
-    fontSize: 20,
+    fontFamily: "nohemi",
   },
   buttonTextPrimary: {
     color: "#FFFFF0",
+    fontFamily: "nohemiSemiBold",
   },
   buttonTextSecondary: {
     color: "#EC622C",
+    fontFamily: "nohemiSemiBold",
   },
 });
 
