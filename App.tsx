@@ -4,7 +4,8 @@ import { useFonts } from "expo-font";
 import { store } from "./src/redux/store";
 
 // import StartScreen from "./src/pages/StartScreen";
-import Register from "./src/pages/Register";
+// import Register from "./src/pages/Register";
+import Login from "./src/pages/Login";
 
 export default function App() {
   const [loadedFont, fontError] = useFonts({
@@ -16,7 +17,8 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Register />
+      <Login />
+      {/* <Register /> */}
       {/* <StartScreen /> */}
     </Provider>
   );

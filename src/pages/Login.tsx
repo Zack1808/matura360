@@ -13,7 +13,7 @@ import React, { useState, useEffect } from "react";
 
 import Button from "../components/Button";
 
-const Register = () => {
+const Login = () => {
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
 
   useEffect(() => {
@@ -41,24 +41,25 @@ const Register = () => {
           source={require("../../assets/imgs/background2.png")}
           style={[styles.backgroundImage, { bottom: keyboardHeight }]}
         />
-        <Text style={styles.title}>Registracija</Text>
+        <Text style={styles.title}>Prijava</Text>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="Korisničko ime" />
           <TextInput style={styles.input} placeholder="E-mail" />
           <TextInput style={styles.input} placeholder="Lozinka" />
-          <TextInput style={styles.input} placeholder="Ponovi lozinku" />
+          <Button style={{ color: "#EC622C", paddingHorizontal: 10 }}>
+            Zaboravljena lozinka?
+          </Button>
         </View>
         <View style={styles.buttonContainer}>
-          <Button primary>Registriraj se</Button>
+          <Button primary>Prijavi se</Button>
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{
                 fontFamily: "nohemi",
               }}
             >
-              Imaš profil?{" "}
+              Nemaš profil?{" "}
             </Text>
-            <Button style={styles.buttonText}> Prijavi se.</Button>
+            <Button style={styles.buttonText}> Registriraj se se.</Button>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -109,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+export default Login;
