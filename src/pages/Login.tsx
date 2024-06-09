@@ -13,7 +13,7 @@ import React, { useState, useEffect } from "react";
 
 import Button from "../components/Button";
 
-const Login = () => {
+const Login: React.FC = ({ navigation }: any) => {
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
 
   useEffect(() => {
@@ -59,7 +59,13 @@ const Login = () => {
             >
               Nemaš profil?{" "}
             </Text>
-            <Button style={styles.buttonText}> Registriraj se se.</Button>
+            <Button
+              onPress={() => navigation.navigate("Register")}
+              style={styles.buttonText}
+            >
+              {" "}
+              Registriraj se se.
+            </Button>
           </View>
         </View>
       </KeyboardAvoidingView>

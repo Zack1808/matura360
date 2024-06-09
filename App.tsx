@@ -1,11 +1,12 @@
-import { Provider } from "react-redux";
 import { useFonts } from "expo-font";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { store } from "./src/redux/store";
-
-// import StartScreen from "./src/pages/StartScreen";
-// import Register from "./src/pages/Register";
 import Login from "./src/pages/Login";
+import StartScreen from "./src/pages/StartScreen";
+import Register from "./src/pages/Register";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [loadedFont, fontError] = useFonts({
@@ -16,10 +17,17 @@ export default function App() {
   });
 
   return (
-    <Provider store={store}>
-      <Login />
-      {/* <Register /> */}
-      {/* <StartScreen /> */}
-    </Provider>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName="StartScreen"
+      >
+        <Stack.Screen name="StartScreen" component={StartScreen} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Login" component={Login} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

@@ -13,8 +13,32 @@ import React, { useState, useEffect } from "react";
 
 import Button from "../components/Button";
 
-const Register = () => {
+import { useRegistration } from "../hooks/registration";
+
+import { RegistrationErrorState, RegistrationState } from "../interfaces/state";
+
+const Register: React.FC = ({ navigation }: any) => {
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<RegistrationErrorState>({
+    userNameError: "",
+    emailError: "",
+    passwordError: "",
+    repeatPasswordError: "",
+  });
+  const [data, setData] = useState<RegistrationState>({
+    userName: "",
+    email: "",
+    password: "",
+    repeatPassword: "",
+  });
+
+  const { registerUser } = useRegistration({ setIsLoading, setErrors });
+
+  const { userNameError, emailError, passwordError, repeatPasswordError } =
+    errors;
+
+  const { userName, email, password, repeatPassword } = data;
 
   useEffect(() => {
     const keyboardDidShow = Keyboard.addListener("keyboardDidShow", (event) => {
@@ -31,6 +55,86 @@ const Register = () => {
     };
   }, []);
 
+  const handleTextChange = (text: string, type: string) => {
+    switch (type) {
+      case "username":
+        setData((prevState) => ({
+          ...prevState,
+          userName: text,
+        }));
+        setErrors((prevState) => ({
+          ...prevState,
+          userNameError: "",
+        }));
+        break;
+      case "email":
+        setData((prevState) => ({
+          ...prevState,
+          email: text,
+        }));
+        setErrors((prevState) => ({
+          ...prevState,
+          emailError: "",
+        }));
+        break;
+      case "password":
+        setData((prevState) => ({
+          ...prevState,
+          password: text,
+        }));
+        setErrors((prevState) => ({
+          ...prevState,
+          passwordError: "",
+        }));
+        break;
+      case "repeat":
+        setData((prevState) => ({
+          ...prevState,
+          repeatPassword: text,
+        }));
+        setErrors((prevState) => ({
+          ...prevState,
+          repeatPasswordError: "",
+        }));
+        break;
+    }
+  };
+
+  const handleRegistration = () => {
+    if (!!!userName) {
+      setErrors((prevState) => ({
+        ...prevState,
+        userNameError: "Morate upisati vaše korisničko ime",
+      }));
+      return;
+    }
+
+    if (!!!email) {
+      setErrors((prevState) => ({
+        ...prevState,
+        emailError: "Morate upisati vašu mail adressu",
+      }));
+      return;
+    }
+
+    if (!!!password) {
+      setErrors((prevState) => ({
+        ...prevState,
+        passwordError: "Morate upisati vašu lozinku",
+      }));
+      return;
+    }
+    if (password !== repeatPassword) {
+      setErrors((prevState) => ({
+        ...prevState,
+        repeatPasswordError: "Lozinke se ne poklapaju",
+      }));
+      return;
+    }
+
+    registerUser(userName, email, password);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -43,13 +147,79 @@ const Register = () => {
         />
         <Text style={styles.title}>Registracija</Text>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="Korisničko ime" />
-          <TextInput style={styles.input} placeholder="E-mail" />
-          <TextInput style={styles.input} placeholder="Lozinka" />
-          <TextInput style={styles.input} placeholder="Ponovi lozinku" />
+          <View style={{ gap: 5 }}>
+            <TextInput
+              value={userName}
+              onChangeText={(text: string) =>
+                handleTextChange(text, "username")
+              }
+              style={[styles.input, !!userNameError && styles.errorInput]}
+              placeholder="Korisničko ime"
+            />
+            <View style={{ display: !!userNameError ? "flex" : "none" }}>
+              <Text style={styles.errorText}>
+                {!!userNameError && userNameError}
+              </Text>
+            </View>
+          </View>
+          <View style={{ gap: 5 }}>
+            <TextInput
+              value={email}
+              onChangeText={(text: string) => handleTextChange(text, "email")}
+              style={[styles.input, !!emailError && styles.errorInput]}
+              placeholder="E-mail"
+              keyboardType="email-address"
+            />
+            <View style={{ display: !!emailError ? "flex" : "none" }}>
+              <Text style={styles.errorText}>{!!emailError && emailError}</Text>
+            </View>
+          </View>
+          <View style={{ gap: 5 }}>
+            <TextInput
+              value={password}
+              onChangeText={(text: string) =>
+                handleTextChange(text, "password")
+              }
+              style={[
+                styles.input,
+                (!!passwordError || !!repeatPasswordError) && styles.errorInput,
+              ]}
+              placeholder="Lozinka"
+              secureTextEntry={true}
+            />
+            <View
+              style={{
+                display: !!passwordError ? "flex" : "none",
+              }}
+            >
+              <Text style={styles.errorText}>
+                {!!passwordError && passwordError}
+              </Text>
+            </View>
+          </View>
+          <View style={{ gap: 5 }}>
+            <TextInput
+              value={repeatPassword}
+              onChangeText={(text: string) => handleTextChange(text, "repeat")}
+              style={[styles.input, !!repeatPasswordError && styles.errorInput]}
+              placeholder="Ponovljena lozinka"
+              secureTextEntry={true}
+            />
+            <View
+              style={{
+                display: !!repeatPasswordError ? "flex" : "none",
+              }}
+            >
+              <Text style={styles.errorText}>
+                {!!repeatPasswordError && repeatPasswordError}
+              </Text>
+            </View>
+          </View>
         </View>
         <View style={styles.buttonContainer}>
-          <Button primary>Registriraj se</Button>
+          <Button primary onPress={handleRegistration}>
+            {isLoading ? "Loading" : "Registriraj se"}
+          </Button>
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{
@@ -58,7 +228,13 @@ const Register = () => {
             >
               Imaš profil?{" "}
             </Text>
-            <Button style={styles.buttonText}> Prijavi se.</Button>
+            <Button
+              onPress={() => navigation.navigate("Login")}
+              style={styles.buttonText}
+            >
+              {" "}
+              Prijavi se.
+            </Button>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -99,6 +275,14 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  errorInput: {
+    borderColor: "red",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "red",
+    fontFamily: "nohemi",
   },
   buttonContainer: {
     gap: 40,

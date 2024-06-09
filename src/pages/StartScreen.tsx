@@ -13,7 +13,7 @@ import React, { useState, useEffect } from "react";
 import Loader from "../components/Loader";
 import Button from "../components/Button";
 
-const StartScreen: React.FC = () => {
+const StartScreen: React.FC = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -48,19 +48,27 @@ const StartScreen: React.FC = () => {
             <Text style={{ color: "#EC622C" }}> Matura360</Text>
           </Text>
           <View style={styles.welcomeButtonContainer}>
-            <Button style={{ width: "100%" }} primary>
+            <Button
+              onPress={() => navigation.navigate("Login")}
+              style={{ width: "100%", textAlign: "center" }}
+              primary
+            >
               Prijavi se
             </Button>
-            <Button style={{ width: "100%" }} secondary>
+            <Button
+              onPress={() => navigation.navigate("Register")}
+              style={{ width: "100%", textAlign: "center" }}
+              secondary
+            >
               Registriraj se
             </Button>
           </View>
         </View>
         <View style={styles.bottomContainer}>
-          <Button style={{ width: "100%" }} secondary>
+          <Button style={{ width: "100%", textAlign: "center" }} secondary>
             Nastavi kao gost
           </Button>
-          <Text style={[styles.text, { fontSize: 16 }]}>
+          <Text style={{ fontSize: 14, fontFamily: "nohemi" }}>
             Kao gost nećeš moći pratiti napredak.
           </Text>
         </View>
@@ -102,11 +110,11 @@ const styles = StyleSheet.create({
     gap: 30,
   },
   title: {
-    fontSize: 45,
+    fontSize: 32,
     fontFamily: "nohemiSemiBold",
   },
   text: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: "nohemiMedium",
   },
   welcomeButtonContainer: {
