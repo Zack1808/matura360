@@ -8,8 +8,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import Button from "../components/Button";
 
@@ -18,7 +19,6 @@ import { useRegistration } from "../hooks/registration";
 import { RegistrationErrorState, RegistrationState } from "../interfaces/state";
 
 const Register: React.FC = ({ navigation }: any) => {
-  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<RegistrationErrorState>({
     userNameError: "",
@@ -39,21 +39,6 @@ const Register: React.FC = ({ navigation }: any) => {
     errors;
 
   const { userName, email, password, repeatPassword } = data;
-
-  useEffect(() => {
-    const keyboardDidShow = Keyboard.addListener("keyboardDidShow", (event) => {
-      setKeyboardHeight(-event.endCoordinates.height);
-    });
-
-    const keyboardDidHide = Keyboard.addListener("keyboardDidHide", (event) => {
-      setKeyboardHeight(0);
-    });
-
-    return () => {
-      keyboardDidHide.remove();
-      keyboardDidShow.remove();
-    };
-  }, []);
 
   const handleTextChange = (text: string, type: string) => {
     switch (type) {
@@ -139,11 +124,12 @@ const Register: React.FC = ({ navigation }: any) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={60}
       >
         <Image
           source={require("../../assets/imgs/background2.png")}
-          style={[styles.backgroundImage, { bottom: keyboardHeight }]}
+          style={styles.backgroundImage}
         />
         <Text style={styles.title}>Registracija</Text>
         <View style={styles.inputContainer}>
@@ -218,7 +204,7 @@ const Register: React.FC = ({ navigation }: any) => {
         </View>
         <View style={styles.buttonContainer}>
           <Button primary onPress={handleRegistration}>
-            {isLoading ? "Loading" : "Registriraj se"}
+            {isLoading ? <ActivityIndicator color="white" /> : "Registriraj se"}
           </Button>
           <View style={{ flexDirection: "row" }}>
             <Text
@@ -255,6 +241,10 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "absolute",
     zIndex: -1,
+    top: 0,
+    left: 0,
+    height: "100%",
+    width: "100%",
   },
   title: {
     marginTop: "70%",

@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import * as SecureStore from "expo-secure-store";
+import Toast from "react-native-toast-message";
 
 import { UseRegistrationProps } from "../interfaces/hooks";
 
@@ -68,8 +69,6 @@ export const useRegistration = ({
           displayName: userName,
           slug: userName.toLowerCase().replace(/\s/g, ""),
         });
-
-        console.log("done");
       } catch (err: any) {
         switch (err.message) {
           case "Firebase: Error (auth/email-already-in-use).":
@@ -80,6 +79,11 @@ export const useRegistration = ({
               }));
             break;
           default:
+            Toast.show({
+              type: "error",
+              text1: "Nešto je pošlo po zlu!",
+            });
+            const timer = setTimeout(() => Toast.hide(), 300);
             break;
         }
       } finally {
@@ -89,5 +93,38 @@ export const useRegistration = ({
     [setIsLoading, setErrors]
   );
 
-  return { registerUser };
+  const loginUser = useCallback(
+    async (email: string, password: string) => {
+      setIsLoading && setIsLoading(true);
+      try {
+        if (isEmailFormatNotValid(email)) {
+          setErrors &&
+            setErrors((prevState) => ({
+              ...prevState,
+              emailError: "Mail adresa je neispravno unesena.",
+            }));
+          return;
+        }
+
+        await signInWithEmailAndPassword(auth, email, password);
+
+        const storedEmail = await SecureStore.getItemAsync("email");
+        const storedPassword = await SecureStore.getItemAsync("password");
+
+        if (!!!storedEmail && !!!storedPassword) {
+          await SecureStore.setItemAsync("email", email);
+          await SecureStore.setItemAsync("password", password);
+        }
+
+        console.log("done");
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading && setIsLoading(false);
+      }
+    },
+    [setIsLoading, setErrors]
+  );
+
+  return { registerUser, loginUser };
 };

@@ -8,49 +8,123 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 
+import { useRegistration } from "../hooks/registration";
+
 import Button from "../components/Button";
 
+import { RegistrationState, RegistrationErrorState } from "../interfaces/state";
+
 const Login: React.FC = ({ navigation }: any) => {
-  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<RegistrationErrorState>({
+    emailError: "",
+    passwordError: "",
+  });
+  const [data, setData] = useState<RegistrationState>({
+    email: "",
+    password: "",
+  });
 
-  useEffect(() => {
-    const keyboardDidShow = Keyboard.addListener("keyboardDidShow", (event) => {
-      setKeyboardHeight(-event.endCoordinates.height);
-    });
+  const { loginUser } = useRegistration({ setIsLoading, setErrors });
 
-    const keyboardDidHide = Keyboard.addListener("keyboardDidHide", (event) => {
-      setKeyboardHeight(0);
-    });
+  const { emailError, passwordError } = errors;
 
-    return () => {
-      keyboardDidHide.remove();
-      keyboardDidShow.remove();
-    };
-  }, []);
+  const { email, password } = data;
+
+  const handleTextChange = (text: string, type: string) => {
+    switch (type) {
+      case "email":
+        setData((prevState) => ({ ...prevState, email: text }));
+        setErrors((prevState) => ({
+          ...prevState,
+          emailError: "",
+        }));
+        break;
+      case "password":
+        setData((prevState) => ({ ...prevState, password: text }));
+        setErrors((prevState) => ({
+          ...prevState,
+          passwordError: "",
+        }));
+    }
+  };
+
+  const handleRegistration = () => {
+    if (!!!email) {
+      setErrors((prevState) => ({
+        ...prevState,
+        emailError: "Morate upisati vašu mail adressu",
+      }));
+      return;
+    }
+
+    if (!!!password) {
+      setErrors((prevState) => ({
+        ...prevState,
+        passwordError: "Morate upisati vašu lozinku",
+      }));
+      return;
+    }
+
+    loginUser(email, password);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Image
           source={require("../../assets/imgs/background2.png")}
-          style={[styles.backgroundImage, { bottom: keyboardHeight }]}
+          style={styles.backgroundImage}
         />
         <Text style={styles.title}>Prijava</Text>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="E-mail" />
-          <TextInput style={styles.input} placeholder="Lozinka" />
+          <View style={{ gap: 5 }}>
+            <TextInput
+              value={email}
+              onChangeText={(text: string) => handleTextChange(text, "email")}
+              style={[styles.input, !!emailError && styles.errorInput]}
+              placeholder="E-mail"
+              keyboardType="email-address"
+            />
+            <View style={{ display: !!emailError ? "flex" : "none" }}>
+              <Text style={styles.errorText}>{!!emailError && emailError}</Text>
+            </View>
+          </View>
+          <View style={{ gap: 5 }}>
+            <TextInput
+              value={password}
+              onChangeText={(text: string) =>
+                handleTextChange(text, "password")
+              }
+              style={[styles.input, !!passwordError && styles.errorInput]}
+              placeholder="Lozinka"
+              secureTextEntry={true}
+            />
+            <View
+              style={{
+                display: !!passwordError ? "flex" : "none",
+              }}
+            >
+              <Text style={styles.errorText}>
+                {!!passwordError && passwordError}
+              </Text>
+            </View>
+          </View>
           <Button style={{ color: "#EC622C", paddingHorizontal: 10 }}>
             Zaboravljena lozinka?
           </Button>
         </View>
         <View style={styles.buttonContainer}>
-          <Button primary>Prijavi se</Button>
+          <Button primary onPress={handleRegistration}>
+            {isLoading ? <ActivityIndicator color="white" /> : "Prijavi se"}
+          </Button>
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{
@@ -86,6 +160,10 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "absolute",
     zIndex: -1,
+    top: 0,
+    left: 0,
+    height: "100%",
+    width: "100%",
   },
   title: {
     marginTop: "70%",
@@ -106,6 +184,14 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  errorInput: {
+    borderColor: "red",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "red",
+    fontFamily: "nohemi",
   },
   buttonContainer: {
     gap: 40,
