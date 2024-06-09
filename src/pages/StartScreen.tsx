@@ -9,31 +9,16 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-import Loader from "../components/Loader";
 import Button from "../components/Button";
 
 import { useRegistration } from "../hooks/registration";
 
 const StartScreen: React.FC = ({ navigation }: any) => {
-  const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { setToGuestMode } = useRegistration({ setIsLoading });
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsAppLoading(false), 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isAppLoading)
-    return (
-      <View style={styles.loaderContainer}>
-        <Loader />
-      </View>
-    );
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -92,12 +77,6 @@ const StartScreen: React.FC = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  loaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#2C56EC",
-  },
   screenContainer: {
     flex: 1,
     backgroundColor: "#FFFFF0",

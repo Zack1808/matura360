@@ -120,13 +120,7 @@ export const useRegistration = ({
           await deleteUser(currUser);
         }
 
-        const { user } = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-        console.log(user);
+        await signInWithEmailAndPassword(auth, email, password);
 
         const storedEmail = await SecureStore.getItemAsync("email");
         const storedPassword = await SecureStore.getItemAsync("password");

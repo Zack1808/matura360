@@ -1,15 +1,18 @@
+import { useState, useEffect } from "react";
+import { View } from "react-native";
 import { useFonts } from "expo-font";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Toast from "react-native-toast-message";
+import Router from "./src/Router";
 
-import Login from "./src/pages/Login";
-import StartScreen from "./src/pages/StartScreen";
-import Register from "./src/pages/Register";
+import Loader from "./src/components/Loader";
 
-const Stack = createNativeStackNavigator();
+import { useAuthStatus } from "./src/hooks/useAuthStatus";
 
 export default function App() {
+  const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
+
+  const { checkingStatus } = useAuthStatus();
+
   const [loadedFont, fontError] = useFonts({
     nohemi: require("./assets/fonts/Nohemi-Regular.ttf"),
     nohemiMedium: require("./assets/fonts/Nohemi-Medium.ttf"),
@@ -17,20 +20,31 @@ export default function App() {
     nohemiBold: require("./assets/fonts/Nohemi-Bold.ttf"),
   });
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAppLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  });
+
+  if (!loadedFont || isAppLoading || checkingStatus)
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#2C56EC",
+        }}
+      >
+        <Loader />
+      </View>
+    );
+
   return (
     <>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-          initialRouteName="StartScreen"
-        >
-          <Stack.Screen name="StartScreen" component={StartScreen} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="Login" component={Login} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Router />
       <Toast />
     </>
   );
