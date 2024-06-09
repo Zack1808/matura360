@@ -1,8 +1,10 @@
 import { useCallback } from "react";
 import {
   signInWithEmailAndPassword,
+  signInAnonymously,
   createUserWithEmailAndPassword,
   updateProfile,
+  deleteUser,
 } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import * as SecureStore from "expo-secure-store";
@@ -48,6 +50,12 @@ export const useRegistration = ({
         }
 
         if (setErrors && isPasswordNotValid({ password, setErrors })) return;
+
+        const currUser = auth.currentUser;
+
+        if (currUser && currUser.isAnonymous) {
+          await deleteUser(currUser);
+        }
 
         const storedEmail = await SecureStore.getItemAsync("email");
         const storedPassword = await SecureStore.getItemAsync("password");
@@ -106,7 +114,19 @@ export const useRegistration = ({
           return;
         }
 
-        await signInWithEmailAndPassword(auth, email, password);
+        const currUser = auth.currentUser;
+
+        if (currUser && currUser.isAnonymous) {
+          await deleteUser(currUser);
+        }
+
+        const { user } = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        console.log(user);
 
         const storedEmail = await SecureStore.getItemAsync("email");
         const storedPassword = await SecureStore.getItemAsync("password");
@@ -115,8 +135,6 @@ export const useRegistration = ({
           await SecureStore.setItemAsync("email", email);
           await SecureStore.setItemAsync("password", password);
         }
-
-        console.log("done");
       } catch (err) {
         console.log(err);
       } finally {
@@ -126,5 +144,16 @@ export const useRegistration = ({
     [setIsLoading, setErrors]
   );
 
-  return { registerUser, loginUser };
+  const setToGuestMode = useCallback(async () => {
+    setIsLoading && setIsLoading(true);
+    try {
+      await signInAnonymously(auth);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading && setIsLoading(false);
+    }
+  }, [setIsLoading]);
+
+  return { registerUser, loginUser, setToGuestMode };
 };

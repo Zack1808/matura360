@@ -7,22 +7,28 @@ import {
   StatusBar,
   Platform,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import Loader from "../components/Loader";
 import Button from "../components/Button";
 
+import { useRegistration } from "../hooks/registration";
+
 const StartScreen: React.FC = ({ navigation }: any) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { setToGuestMode } = useRegistration({ setIsLoading });
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 5000);
+    const timer = setTimeout(() => setIsAppLoading(false), 5000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  if (isLoading)
+  if (isAppLoading)
     return (
       <View style={styles.loaderContainer}>
         <Loader />
@@ -65,8 +71,16 @@ const StartScreen: React.FC = ({ navigation }: any) => {
           </View>
         </View>
         <View style={styles.bottomContainer}>
-          <Button style={{ width: "100%", textAlign: "center" }} secondary>
-            Nastavi kao gost
+          <Button
+            style={{ width: "100%", textAlign: "center" }}
+            secondary
+            onPress={setToGuestMode}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#EC622C" />
+            ) : (
+              "Nastavi kao gost"
+            )}
           </Button>
           <Text style={{ fontSize: 14, fontFamily: "nohemi" }}>
             Kao gost nećeš moći pratiti napredak.
